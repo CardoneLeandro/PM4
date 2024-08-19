@@ -6,7 +6,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Order } from './orders.entity';
+import { Order } from '../orders/entities/orders.entity';
 import { Product } from '../products/entities/products.entity';
 
 @Entity({ name: 'order_details' })

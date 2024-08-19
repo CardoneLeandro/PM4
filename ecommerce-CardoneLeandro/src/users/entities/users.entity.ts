@@ -5,7 +5,7 @@
 //   id: string = uuidv4();
 
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Order } from '../../entities/orders.entity';
+import { Order } from '../../orders/entities/orders.entity';
 
 @Entity({ name: 'users' })
 export class User {
