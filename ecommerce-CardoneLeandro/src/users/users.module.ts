@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
+import { UsersController } from './users.controller';
+import { User } from './entities/users.entity'; // Ruta a la entidad
 
 @Module({
+  imports: [TypeOrmModule.forFeature([User])], // Importa la entidad
   controllers: [UsersController],
-  providers: [UsersService]
+  providers: [UsersService],
 })
 export class UsersModule {}

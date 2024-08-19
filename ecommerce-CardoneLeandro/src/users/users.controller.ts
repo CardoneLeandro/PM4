@@ -1,39 +1,52 @@
-import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from 'src/auth/auth-guard/auth-guard.guard';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-    @Get()
-    getUser():string {
-        return this.usersService.getUser();
-    }
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
 
-    @Get('profile')
-    getUserProfile():string {
-        return 'Profile';
-    }
+  @Get()
+  @UseGuards(AuthGuard)
+  findAll() {
+    return this.usersService.findAll();
+  }
 
-    @Get('profile/:id')
-    getUserProfileId(@Param('id') id:string):string {
-        return 'Profile Id';
-    }
-    
-    @Post()
-    addUser():string {
-        return 'This action adds a new user';
-    }
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  findOne(@Param('id') id: string) {
+    return (
+      console.log('===controller===> ID', typeof id, id),
+      this.usersService.findOne(Number(id))
+    );
+  }
 
-    @Put()
-    updateUser():string {
-        return 'This action updates a user';
+  @Put(':id')
+  @UseGuards(AuthGuard)
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
+  }
 
-    }
-
-    @Delete()
-        deleteUser():string {
-            return 'This action deletes a user';
-        }
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
+  }
 }
-
