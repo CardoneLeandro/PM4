@@ -1,31 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-import { U_repository } from 'src/users/repository/users.repository';
+import { UserRepository } from 'src/users/repository/users.repository';
+import { User } from '../users/entities/users.entity'
 
 @Injectable()
 export class AuthService {
-  constructor(readonly repository: U_repository) {}
-  singIn(userEmail: string, Password: string) {
-    return this.repository.singIn(userEmail, Password);
-  }
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(readonly uRep: UserRepository) {}
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+ async validateUser(email:string, password:string):Promise <User | null> {
+  const user:User = await this.uRep.findOneBy({email})
+    if (!user) {return null}
+    if (user.password !== password) {return null}
+  return user
+}
+async loginUser(user:User):Promise<{accessToken: string}> {
+const payload : { email= user.email, sub:user.id}
+const accessToken = this.jwtService.sign(payload)
+return {accessToken}
+}
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
 }

@@ -1,124 +1,48 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateUserDto } from '../dto/update-user.dto';
-export interface User {
-  id: number;
-  email: string;
-  name: string;
-  password: string;
-  address: string;
-  phone: string;
-  country: string;
-  city: string;
-}
+import { DataSource, Repository } from 'typeorm';
+import { User } from '../entities/users.entity';
+import { UUID } from 'crypto';
 
 @Injectable()
-export class U_repository {
-  private users: User[] = [
-    {
-      id: 1,
-      email: 'XHr5K@example.com',
-      name: 'Leandro Cardone',
-      password: '123456',
-      address: 'Rua dos bobos, 0',
-      phone: '123456789',
-      country: 'Brasil',
-      city: 'São Paulo',
-    },
-    {
-      id: 2,
-      email: '132hefsa@example.com',
-      name: 'Maria Cardone',
-      password: '234567',
-      address: 'Juan Cruz, 10',
-      phone: '987654321',
-      country: 'Colombia',
-      city: 'Bogota',
-    },
-    {
-      id: 3,
-      email: '3hefsa@example.com',
-      name: 'Carlos Cardone',
-      password: '345678',
-      address: 'Calle 8, 12',
-      phone: '123456789',
-      country: 'Chile',
-      city: 'Santiago',
-    },
-    {
-      id: 4,
-      email: '4hefsa@example.com',
-      name: 'Ana Cardone',
-      password: '456789',
-      address: 'Calle 9, 13',
-      phone: '987654321',
-      country: 'Peru',
-      city: 'Lima',
-    },
-    {
-      id: 5,
-      email: '5hefsa@example.com',
-      name: 'Luis Cardone',
-      password: '567890',
-      address: 'Calle 10, 14',
-      phone: '123456789',
-      country: 'Venezuela',
-      city: 'Caracas',
-    },
-  ];
-
-  newId() {
-    return this.users.length + 1;
-  }
-  getAll() {
-    return this.users;
+export class UserRepository extends Repository<User> {
+  constructor ( private readonly dSource:DataSource ) {
+    super (User, dSource.getRepository(User).manager)
   }
 
-  getById(id: number) {
-    return this.users.find((user) => user.id === id);
+  async getAll():Promise<User[]>{
+    return this.find()
   }
 
-  createUser(newUser: User) {
-    this.users.push(newUser);
-    return newUser;
+  async getUserById(id:UUID):Promise<User | null>{
+    const user:User = await this.findOneBy({id})
+    return user
   }
 
-  updateUser(id: number, updatingDate: UpdateUserDto) {
-    console.log('===repository===>', id, updatingDate);
-    const index: number | undefined = this.users.findIndex(
-      (user) => user.id === id,
-    );
-    console.log('===repository===>', index);
-    if (index === -1) {
-      return 'User not found';
+  async getUserByEmail(email:Partial<User>):Promise<User | null>{
+    const user:User = await this.findOneBy(email)
+    return user
+  }
+
+  async createUser(data:Partial<User>):Promise<User | null>{
+    const newUser:User|null = this.create(data)
+    const createdUser = await this.save(newUser)
+    return createdUser
+  }
+
+  async updateUser(id:UUID, data:Partial<User>):Promise<User | null> {
+    const user:User|null = await this.findOneBy({id})
+    if(!user) {
+      return null
     }
-    this.users[index] = { ...this.users[index], ...updatingDate };
-    return this.users[index];
+    await this.update({id}, data)
+    const updateUser:User = await this.findOneBy({id}) 
+    return updateUser
   }
 
-  removeUser(id: number) {
-    const index: number | undefined = this.users.findIndex(
-      (user) => user.id === id,
-    );
-    if (index === -1) {
-      return 'User not found';
-    }
-    this.users[index] = { ...this.users[index], password: 'DELETED' };
-    return this.users[index];
-  }
-
-  singIn(userEmail: string, Password: string) {
-    if (!userEmail || !Password) {
-      return 'all fields are required';
-    }
-    const user: User | undefined = this.users.find(
-      (user) => user.email === userEmail,
-    );
-    if (user === undefined) {
-      return 'invalid credentials';
-    }
-    if (user.password !== Password) {
-      return 'invalid credentials';
-    }
-    return user;
+  async deleteUser(id:UUID):Promise<{id:UUID} | null> {
+    const user:User|null = await this.findOneBy({id})
+    if(!user) {return null}
+    await this.delete({id}) 
+    return {id}
   }
 }

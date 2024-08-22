@@ -6,38 +6,31 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { SignInDTO as sDTO }from './dto/signIn.dto'
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authSv: AuthService) {}
 
-  @Post()
-  singIn(@Body() userName: string, Password: string) {
-    return this.authService.singIn(userName, Password);
+  @Post('signin')
+  async singIn(@Body() DTO: sDTO) {
+    const {eMail, Password} = DTO
+    if(!eMail || !Password){
+      throw new BadRequestException('All fields are required')
+    }
+    try {
+      const user = await this.authSv.validateUser(eMail, Password)
+      if(!user) {
+        throw new BadRequestException('Invalid credentials')
+      }
+      return this.authSv.loginUser(user)
+
+    } catch (error) { 
+      console.error(error)  
+    }
   }
 
-  @Get()
-  findAll() {
-    return 'get on auth controller';
-    //return this.authService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
 }

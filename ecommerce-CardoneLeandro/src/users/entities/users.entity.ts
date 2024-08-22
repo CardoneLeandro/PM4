@@ -1,12 +1,7 @@
-// import { v4 as uuidv4 } from 'uuid';
-// @Entity()
-// export class User {
-//   @PrimaryGeneratedColumn('uuid')
-//   id: string = uuidv4();
-
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Order } from '../../orders/entities/orders.entity';
-
+//it is not necesay to import UUID 'cause the DB automaticly generates the id
+//we only need to specify the type of the field.
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')

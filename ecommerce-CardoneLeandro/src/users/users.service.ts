@@ -1,34 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { U_repository, User } from './repository/users.repository';
+import { UserRepository } from './repository/users.repository';
+import { User } from './entities/users.entity';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
-  constructor(private repository: U_repository) {}
-  create(createUserDto: CreateUserDto) {
-    const newId: number = this.repository.newId();
-    const newUser: User = { id: newId, ...createUserDto };
-    return this.repository.createUser(newUser);
+  constructor(private userRep: UserRepository) {}
+  
+  async findAll():Promise<User[]> {
+    return this.userRep.getAll();
   }
 
-  findAll(): User[] {
-    return this.repository.getAll();
+async findOne(id: UUID):Promise<User|null> {
+    const user = await this.userRep.getUserById(id)
+    return user;
+  }
+  async create(data:Partial<User>):Promise<User|null> {
+    const newUser = await this.userRep.createUser(data)
+    return newUser;
   }
 
-  findOne(id: number): User {
-    return (
-      console.log('===service===> ID', typeof id, id),
-      this.repository.getById(id)
-    );
+  async update(id: UUID, data:Partial<User>):Promise<User|null> {
+    const updatedUser = await this.userRep.updateUser(id, data)
+    return updatedUser
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    console.log('===service===> ID', typeof id, id, updateUserDto);
-    return this.repository.updateUser(id, updateUserDto);
-  }
-
-  remove(id: number) {
-    return this.repository.removeUser(id);
+  async remove(id:UUID):Promise<{id:UUID} | null> {
+    return this.userRep.deleteUser(id)
   }
 }
