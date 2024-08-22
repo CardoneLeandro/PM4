@@ -21,4 +21,6 @@ export class CategoriesService{
     const newCategory = this.catRp.create(createCategoryDto);
     return await this.catRp.save(newCategory);
   }
+
+
 }
