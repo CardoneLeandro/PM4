@@ -1,7 +1,7 @@
 import { registerAs } from "@nestjs/config";
 import {config as dotenvConfig} from "dotenv";
 import { DataSource, DataSourceOptions } from "typeorm";
-import { writeLog } from "../utils/log";
+import { writeLog } from "../src/utils/log";
 
 dotenvConfig({path: './.env'});
 
