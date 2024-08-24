@@ -29,10 +29,11 @@ async findOne(id: UUID):Promise<User|null> {
     return this.userRep.deleteUser(id)
   }
 
-  async findOneBy(searchParam:Partial<User>):Promise<User|null> {
-    const key = Object.keys(searchParam)[0]
-    const value = Object.values(searchParam)[0]
-    const user = await this.userRep.findOneBy({where:{[key]:value}})
-    return user
+  async authByEmail(searchParam:Partial<User>):Promise<boolean> {
+    const {email, password} = searchParam
+    const user = await this.userRep.getUserByEmail({email})
+    if(!user) {return false}
+    if (user.password !== password) {return false}
+    return true
   }
 }

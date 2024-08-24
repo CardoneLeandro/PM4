@@ -9,8 +9,7 @@ import { Repository } from "typeorm";
 @Injectable()
 export class AuthGueard implements CanActivate {
     constructor(
-        private readonly usersService:UsersService,
-        private readonly signInDTO:SignInDTO
+        private readonly usersService:UsersService
     ){}
     
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
@@ -27,9 +26,9 @@ export class AuthGueard implements CanActivate {
 }
 
 async validateUser(email:string, password:string):Promise<boolean>{
-    const searchParams = {email}
-    const existingUser = await this.usersService.findOneBy(searchParams)
-    return
+    const searchParams = {email, password}
+    const existingUser = await this.usersService.authByEmail(searchParams)
+    return existingUser
 }
 
 
