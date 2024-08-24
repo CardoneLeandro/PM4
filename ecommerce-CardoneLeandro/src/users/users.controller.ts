@@ -45,7 +45,7 @@ export class UsersController {
   }
 
   @Post()
-  @UseGuards()
+  //NO USAR GUARD
   @UsePipes()
   async create(@Body() data:Partial<User>):Promise<User | null> {
     try {

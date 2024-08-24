@@ -6,16 +6,9 @@ import { User } from '../users/entities/users.entity'
 export class AuthService {
   constructor(readonly uRep: UserRepository) {}
 
- async validateUser(email:string, password:string):Promise <User | null> {
-  const user:User = await this.uRep.findOneBy({email})
-    if (!user) {return null}
-    if (user.password !== password) {return null}
-  return user
-}
-async loginUser(user:User):Promise<{accessToken: string}> {
-const payload : { email= user.email, sub:user.id}
-const accessToken = this.jwtService.sign(payload)
-return {accessToken}
+ async validateUser(email:string):Promise <User | null> {
+  return await this.uRep.findOneBy({email})
+  
 }
 
 }

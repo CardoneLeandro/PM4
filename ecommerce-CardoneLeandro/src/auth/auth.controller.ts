@@ -5,28 +5,28 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInDTO as sDTO }from './dto/signIn.dto'
+import { SignInDTO as DTO }from './dto/signIn.dto'
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authSv: AuthService) {}
 
   @Post('signin')
-  async singIn(@Body() DTO: sDTO) {
-    const {eMail, Password} = DTO
-    if(!eMail || !Password){
+  async singIn(@Body() email:string, password:string) {
+    if(!email || !password){
       throw new BadRequestException('All fields are required')
     }
     try {
-      const user = await this.authSv.validateUser(eMail, Password)
+      const user = await this.authSv.validateUser(email)
       if(!user) {
         throw new BadRequestException('Invalid credentials')
       }
-      return this.authSv.loginUser(user)
+      if(user.password !== password) {
+        throw new BadRequestException('Invalid credentials')}
 
+        return user
     } catch (error) { 
       console.error(error)  
     }
   }
-
 }

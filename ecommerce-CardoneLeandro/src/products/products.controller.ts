@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { Product } from "./entities/products.entity";
 import { ProductSeederService } from "./seeder/product-seeder.service";
+import { AuthGuard } from "src/auth/guard/auth-guard.guard";
 
 @Controller('products')
 export class ProductsController {
@@ -48,6 +49,7 @@ export class ProductsController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   async createNewProduct(@Body() data: Partial<Product>): Promise<{id:string} | null> {
     try {
       const p:Product = await this.prodSv.createProduct(data);
@@ -60,6 +62,7 @@ export class ProductsController {
     } 
 
     @Put(':id')
+    @UseGuards(AuthGuard)
     async updateProduct(@Param('id') id:string, @Body() data: Partial<Product>): Promise<Partial<Product> | null> {
       try {
         const upP:string = await this.prodSv.updateProduct(id, data)
@@ -73,6 +76,7 @@ export class ProductsController {
       }
     
     @Delete(':id')
+    @UseGuards(AuthGuard)
     async deleteProduct(@Param('id') id:string): Promise<{id:string} | null > {
       try{
         const delP:string = await this.prodSv.deleteProduct(id)
@@ -84,5 +88,5 @@ export class ProductsController {
       }
     }
     }
-  
+  // 
 
