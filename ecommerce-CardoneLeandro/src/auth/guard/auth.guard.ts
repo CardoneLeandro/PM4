@@ -22,14 +22,13 @@ export class AuthGueard implements CanActivate {
 
     const [email, password] = Buffer.from(credentials, 'base64').toString().split(':')
  
-    return
+    return this.validateUser(email, password)
 }
 
 async validateUser(email:string, password:string):Promise<boolean>{
-    const searchParams = {email, password}
-    const existingUser = await this.usersService.authByEmail(searchParams)
-    return existingUser
+    const existingUser = await this.usersService.getUserByEmail(email)
+    if(!existingUser) {throw new UnauthorizedException('Invalid credentials')}
+    if(existingUser.password !== password) {throw new UnauthorizedException('Invalid credentials')}
+    return true
 }
-
-
 }

@@ -1,11 +1,7 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';

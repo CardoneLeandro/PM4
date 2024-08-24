@@ -18,8 +18,8 @@ export class UserRepository extends Repository<User> {
     return user
   }
 
-  async getUserByEmail(email:Partial<User>):Promise<User | null>{
-    const user:User = await this.findOneBy(email)
+  async getUserByEmail(email:string):Promise<User | null>{
+    const user:User = await this.findOneBy({email})
     return user
   }
 
