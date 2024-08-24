@@ -1,10 +1,21 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import { Product } from "./entities/products.entity";
+import { ProductSeederService } from "./seeder/product-seeder.service";
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly prodSv:ProductsService) {}
+  constructor(private readonly prodSv:ProductsService, private readonly prodSeedSv: ProductSeederService) {}
+
+  @Post('seed')
+  async seedProducts(): Promise<void> {
+    try{
+      await this.prodSeedSv.preload()
+    }
+    catch{
+      throw new Error('An error occurred during the seeding process')
+    }
+  }
 
   @Get()
   async getProducts(

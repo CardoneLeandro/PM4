@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Param } from '@nestjs/common';
 import { UserRepository } from './repository/users.repository';
 import { User } from './entities/users.entity';
 import { UUID } from 'crypto';
@@ -27,5 +27,12 @@ async findOne(id: UUID):Promise<User|null> {
 
   async remove(id:UUID):Promise<{id:UUID} | null> {
     return this.userRep.deleteUser(id)
+  }
+
+  async findOneBy(searchParam:Partial<User>):Promise<User|null> {
+    const key = Object.keys(searchParam)[0]
+    const value = Object.values(searchParam)[0]
+    const user = await this.userRep.findOneBy({where:{[key]:value}})
+    return user
   }
 }

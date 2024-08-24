@@ -12,7 +12,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthGuard } from 'src/auth/auth-guard/auth-guard.guard';
+import { AuthGuard } from 'src/auth/guard/auth-guard.guard';
 import { User } from './entities/users.entity';
 import { UUID } from 'crypto';
 
