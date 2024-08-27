@@ -20,65 +20,89 @@ import { UUID } from 'crypto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  
-
   @Get()
   @UseGuards(AuthGuard)
-  async findAll():Promise<User[]|null> {
+  async findAll(): Promise<User[] | null> {
     try {
-    return this.usersService.findAll();
+      return this.usersService.findAll();
     } catch (e) {
-      throw new BadRequestException(`An error occurred during the process: ${e.message}`)
+      throw new BadRequestException(
+        `An error occurred during the process: ${e.message}`,
+      );
     }
   }
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id') id:UUID):Promise<User|null> {
-  try {
-    const user = this.usersService.findOne(id)
-    if(!user) {throw new BadRequestException(`User not found with id ${id}`)}
-    return user
-  } catch (e) {
-    throw new BadRequestException(`An error occurred during the process: ${e.message}`)
-  }
+  findOne(@Param('id') id: UUID): Promise<User | null> {
+    try {
+      const user = this.usersService.findOne(id);
+      if (!user) {
+        throw new BadRequestException(`User not found with id ${id}`);
+      }
+      return user;
+    } catch (e) {
+      throw new BadRequestException(
+        `An error occurred during the process: ${e.message}`,
+      );
+    }
   }
 
   @Post()
   //NO USAR GUARD
   @UsePipes()
-  async create(@Body() data:Partial<User>):Promise<User | null> {
+  async create(@Body() data: Partial<User>): Promise<User | null> {
     try {
-    const newUser:User | null = await this.usersService.create(data)
-    if(!newUser) {throw new BadRequestException('An error occurred during the creation process')}
-    return newUser
-    }catch (e) {
-      throw new BadRequestException(`An error occurred during the process: ${e.message}`);
+      const newUser: User | null = await this.usersService.create(data);
+      if (!newUser) {
+        throw new BadRequestException(
+          'An error occurred during the creation process',
+        );
+      }
+      return newUser;
+    } catch (e) {
+      throw new BadRequestException(
+        `An error occurred during the process: ${e.message}`,
+      );
     }
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  async update(@Param('id') id: UUID, @Body() data:Partial<User>):Promise<User|null> {
+  async update(
+    @Param('id') id: UUID,
+    @Body() data: Partial<User>,
+  ): Promise<User | null> {
     try {
-      const updateUser: User | null = await this.usersService.update(id, data)
-      if(!updateUser) {throw new BadRequestException('An error occurred during the update process')} 
-    return updateUser
-    }catch (e) {
-      throw new BadRequestException(`An error occurred during the process: ${e.message}`);
+      const updateUser: User | null = await this.usersService.update(id, data);
+      if (!updateUser) {
+        throw new BadRequestException(
+          'An error occurred during the update process',
+        );
+      }
+      return updateUser;
+    } catch (e) {
+      throw new BadRequestException(
+        `An error occurred during the process: ${e.message}`,
+      );
     }
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  async remove(@Param('id') id: UUID): Promise<{id:UUID} | null> {
+  async remove(@Param('id') id: UUID): Promise<{ id: UUID } | null> {
     try {
-      const isRemoved = await this.usersService.remove(id)
-      if (!isRemoved) {throw new BadRequestException('An error occurred during the deletion process')}
-      return isRemoved
-    }catch (e) {
-      throw new BadRequestException(`An error occurred during the process: ${e.message}`);
+      const isRemoved = await this.usersService.remove(id);
+      if (!isRemoved) {
+        throw new BadRequestException(
+          'An error occurred during the deletion process',
+        );
+      }
+      return isRemoved;
+    } catch (e) {
+      throw new BadRequestException(
+        `An error occurred during the process: ${e.message}`,
+      );
     }
-    
   }
 }

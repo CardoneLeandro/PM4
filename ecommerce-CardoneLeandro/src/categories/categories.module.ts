@@ -9,7 +9,7 @@ import { CategoriesSeederService } from './seeder/categories-seeder.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Category])], //thats how we call the entity
   controllers: [CategoriesController],
-  providers: [CategoriesSeederService ,CategoriesService, CategoriesRepository],
+  providers: [CategoriesSeederService, CategoriesService, CategoriesRepository],
   exports: [CategoriesService],
 })
 export class CategoriesModule {}

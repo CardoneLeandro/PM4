@@ -11,11 +11,14 @@ import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 
 @Module({
-  imports: [// here we import all modules
+  imports: [
+    // here we import all modules
     AuthModule,
     UsersModule,
+    OrdersModule,
     ProductsModule,
     CategoriesModule,
+    
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeormConfig],
@@ -26,8 +29,6 @@ import { OrdersModule } from './orders/orders.module';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
-    CategoriesModule,
-    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { ProductsRepository } from "./repository/products.repository";
-import { Product } from "./entities/products.entity";
+import { Injectable } from '@nestjs/common';
+import { ProductsRepository } from './repository/products.repository';
+import { Product } from './entities/products.entity';
 
 @Injectable()
 export class ProductsService {
@@ -18,7 +18,10 @@ export class ProductsService {
     return await this.prodRp.getProductById(id);
   }
 
-  async updateProduct(id: string, data: Partial<Product>): Promise<string | null> {
+  async updateProduct(
+    id: string,
+    data: Partial<Product>,
+  ): Promise<string | null> {
     return await this.prodRp.updateProduct(id, data);
   }
 

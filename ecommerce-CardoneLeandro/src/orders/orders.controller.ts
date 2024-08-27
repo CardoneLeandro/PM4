@@ -1,8 +1,13 @@
-import { Controller, Get, Post, Body, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
-import { NotFoundError } from 'rxjs';
 
 @Controller('orders')
 export class OrdersController {
@@ -10,14 +15,15 @@ export class OrdersController {
 
   @Post()
   async create(@Body() DTO: CreateOrderDto) {
-    try{
+    try {
       const or = await this.orSv.create(DTO);
-      if (!or) {throw new Error('Order could not be created')}
-      return or 
-    }
-    catch(e){
-      console.error(e)
-      throw new NotFoundException(e.message)
+      if (!or) {
+        throw new Error('Order could not be created');
+      }
+      return or;
+    } catch (e) {
+      console.error(e);
+      throw new NotFoundException(e.message);
     }
   }
 
@@ -25,12 +31,13 @@ export class OrdersController {
   findOne(@Param('id') id: string) {
     try {
       const or = this.orSv.findOne(id);
-      if (!or) {throw new Error(`Order not found with id ${id}}`)}
-      return or
+      if (!or) {
+        throw new Error(`Order not found with id ${id}}`);
+      }
+      return or;
     } catch (e) {
-      console.error(e)
-      throw new NotFoundException(e.message)
+      console.error(e);
+      throw new NotFoundException(e.message);
     }
   }
-
 }

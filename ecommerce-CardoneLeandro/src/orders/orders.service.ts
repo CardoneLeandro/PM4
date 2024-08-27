@@ -5,16 +5,13 @@ import { Order } from './entities/orders.entity';
 
 @Injectable()
 export class OrdersService {
-  constructor(
-    private readonly orRep:OrdersRepository
-  ){}
-  create(DTO: CreateOrderDto):Promise<Order | null> {
-    const {uId,psId} = DTO
+  constructor(private readonly orRep: OrdersRepository) {}
+  create(DTO: CreateOrderDto): Promise<Order | null> {
+    const { uId, psId } = DTO;
     return this.orRep.addOrder(uId, psId);
   }
 
-
-  findOne(id: string):Promise<Order | null> {
+  findOne(id: string): Promise<Order | null> {
     return this.orRep.getOrder(id);
   }
 }
