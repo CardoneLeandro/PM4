@@ -9,6 +9,7 @@ import typeormConfig from 'config/typeorm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
+import { CustomValidationPipe } from './security/pipes/login-user.pipe';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { OrdersModule } from './orders/orders.module';
     ProductsModule,
     CategoriesModule,
     
+    // here we import the config module
     ConfigModule.forRoot({
       isGlobal: true,
       load: [typeormConfig],
@@ -31,6 +33,14 @@ import { OrdersModule } from './orders/orders.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    // here we inject a custom provider
+    { // we declare a custom provider
+      provide:'DTO-ValidationPipe',
+      // we inject our custom validation pipe
+      useClass: CustomValidationPipe 
+    },
+    // here we inject all services
+    AppService],
 })
 export class AppModule {}

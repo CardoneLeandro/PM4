@@ -1,27 +1,28 @@
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { CustomValidationPipe } from '../security/pipes/login-user.pipe';
+import { LoginUserDTO } from './dto/login-user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authSv: AuthService) {}
 
   @Post('signin')
-  async singIn(@Body() email: string, password: string) {
-    if (!email || !password) {
-      throw new BadRequestException('All fields are required');
-    }
+  @UsePipes(new CustomValidationPipe())
+  async singIn(@Body() DTO:LoginUserDTO) {
     try {
-      const user = await this.authSv.validateUser(email);
+      const user = await this.authSv.validateUser(DTO.email);
       if (!user) {
         throw new BadRequestException('Invalid credentials');
       }
-      if (user.password !== password) {
+      if (user.password !== DTO.password) {
         throw new BadRequestException('Invalid credentials');
       }
 
       return user;
     } catch (error) {
       console.error(error);
+      throw new BadRequestException('An error occurred during sign-in');
     }
   }
 }
