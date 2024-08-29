@@ -8,12 +8,21 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from './entities/products.entity';
 import { ProductSeederService } from './seeder/product-seeder.service';
-import { AuthGuard } from 'src/auth/guard/auth-guard.guard';
+import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
+import { IsUUIDPipe } from 'src/common/pipes/isUUID.pipe';
+import { UUID } from 'crypto';
+import { ImageInterceptor } from 'src/files/interceptor/image.interceptor';
+import { DTOValidationPipe } from 'src/common/pipes/DTO-Validation.pipe';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -23,6 +32,7 @@ export class ProductsController {
   ) {}
 
   @Post('seed')
+  @UseGuards(AuthHeaderGuard)
   async seedProducts(): Promise<void> {
     try {
       await this.prodSeedSv.preload();
@@ -53,7 +63,8 @@ export class ProductsController {
     }
   }
 
-  @Get(':id')
+  @Get(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
+  @UsePipes(IsUUIDPipe)
   async getProductById(@Param('id') id: string): Promise<Product | null> {
     try {
       const p = await this.prodSv.getProductById(id);
@@ -67,10 +78,12 @@ export class ProductsController {
     }
   }
 
-  @Post()
-  @UseGuards(AuthGuard)
+  @Post() //=> INCORPORAR UN PIPE PARA VALIDAR EL ID ( EN ESTE CASO REVISAR SI CORRESPONDE PARA EL ID DE USUARIO, SI ES QUE NO VALIDA POR TOKEN)
+  @UseGuards(AuthHeaderGuard)
+  @UseInterceptors(ImageInterceptor)
+  @UsePipes(new DTOValidationPipe())
   async createNewProduct(
-    @Body() data: Partial<Product>,
+    @Body() data: CreateProductDto,
   ): Promise<{ id: string } | null> {
     try {
       const p: Product = await this.prodSv.createProduct(data);
@@ -84,11 +97,13 @@ export class ProductsController {
     }
   }
 
-  @Put(':id')
-  @UseGuards(AuthGuard)
+  @Put(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
+  @UseGuards(AuthHeaderGuard)
+  @UsePipes(IsUUIDPipe)
+  @UsePipes(new DTOValidationPipe())
   async updateProduct(
-    @Param('id') id: string,
-    @Body() data: Partial<Product>,
+    @Param('id') id: UUID,
+    @Body() data: UpdateProductDto,
   ): Promise<Partial<Product> | null> {
     try {
       const upP: string = await this.prodSv.updateProduct(id, data);
@@ -102,9 +117,10 @@ export class ProductsController {
     }
   }
 
-  @Delete(':id')
-  @UseGuards(AuthGuard)
-  async deleteProduct(@Param('id') id: string): Promise<{ id: string } | null> {
+  @Delete(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
+  @UseGuards(AuthHeaderGuard)
+  @UsePipes(IsUUIDPipe)
+  async deleteProduct(@Param('id') id: UUID): Promise<{ id: string } | null> {
     try {
       const delP: string = await this.prodSv.deleteProduct(id);
       if (!delP) {

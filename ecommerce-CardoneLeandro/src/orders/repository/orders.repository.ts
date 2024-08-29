@@ -3,23 +3,27 @@ import { Order } from '../entities/orders.entity';
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entities/users.entity';
 import { Product } from 'src/products/entities/products.entity';
-import { OrderDetail } from 'src/entities/orderDetails.entity';
+import { OrderDetail } from 'src/orders/entities/orderDetails.entity';
+import { UUID } from 'crypto';
 @Injectable()
 export class OrdersRepository extends Repository<Order> {
   constructor(private readonly dSource: DataSource) {
     super(Order, dSource.getRepository(Order).manager);
   }
-  async addOrder(uId: string, psId: string[]): Promise<Order | null> {
+  async addOrder(
+    userId: string,
+    productsId: Partial<Product>[],
+  ): Promise<Order | null> {
     const u: User = await this.dSource
       .getRepository(User)
-      .findOneBy({ id: uId });
+      .findOneBy({ id: userId });
     if (!u) {
       throw new Error('user not found');
     }
     const p: Product[] = await this.dSource
       .getRepository(Product)
-      .findByIds(psId);
-    if (p.length !== psId.length) {
+      .findByIds(productsId);
+    if (p.length !== productsId.length) {
       throw new Error('one or more products not found');
     }
     const Or = new Order();

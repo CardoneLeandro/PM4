@@ -1,3 +1,11 @@
+Para las rutas PUT donde debes actualizar partes de un objeto, puedes utilizar PartialType de @nestjs/mapped-types. Este utilitario genera un tipo basado en el DTO original, pero marca todos los campos como opcionales. Esto te permite recibir un objeto con campos incompletos sin requerir que todos estén presentes.
+ La función PartialType toma un DTO existente y genera una nueva clase DTO donde todos los campos son opcionales. Esto permite que la información entrante en una ruta PUT o PATCH no tenga que incluir todos los campos definidos en el DTO original, pero aún conserva las reglas de validación para aquellos campos que sí estén presentes.
+
+Por ejemplo, si tienes un DTO original CreateUserDto con campos como name, email, y password, al utilizar PartialType(CreateUserDto), se crea un UpdateUserDto donde estos campos son opcionales. Si en la solicitud PUT solo envías email, el UpdateUserDto aceptará este dato y lo validará conforme a las reglas definidas en CreateUserDto, mientras que name y password no serán requeridos.
+
+Esto es especialmente útil para actualizaciones parciales, donde solo algunos campos de un objeto deben ser modificados, sin requerir que toda la estructura del DTO original esté presente.
+
+
 REPASAR TODAS LAS VARIABLES VERIFICANDO LA COHERENCIA EN EL ENUNCIADO DE LAS MISMAS. 
 REPASAR TODOS LOS REPOSITORIOS SEPARANDO LOS RETURN DE LOS AWAIT!!!
 

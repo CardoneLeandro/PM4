@@ -10,18 +10,25 @@ import {
   UseGuards,
   UsePipes,
   BadRequestException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthGuard } from 'src/auth/guard/auth-guard.guard';
+import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
 import { User } from './entities/users.entity';
 import { UUID } from 'crypto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { StringToNumberInterceptor } from '../common/interceptor/string-toNumber.interceptor';
+import { IsUUIDPipe } from 'src/common/pipes/isUUID.pipe';
+import { DTOValidationPipe } from 'src/common/pipes/DTO-Validation.pipe';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserPasswordEncripInterceptor } from './interceptor/user-passwordEncrip.interceptor';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthHeaderGuard)
   async findAll(): Promise<User[] | null> {
     try {
       return this.usersService.findAll();
@@ -31,12 +38,12 @@ export class UsersController {
       );
     }
   }
-
   @Get(':id')
-  @UseGuards(AuthGuard)
-  findOne(@Param('id') id: UUID): Promise<User | null> {
+  @UseGuards(AuthHeaderGuard)
+  @UsePipes(IsUUIDPipe)
+  async findOne(@Param('id') id: UUID): Promise<User | null> {
     try {
-      const user = this.usersService.findOne(id);
+      const user = await this.usersService.findOne(id);
       if (!user) {
         throw new BadRequestException(`User not found with id ${id}`);
       }
@@ -47,11 +54,12 @@ export class UsersController {
       );
     }
   }
-
+  //====>> encriptar contrasña
   @Post()
-  //NO USAR GUARD
-  @UsePipes()
-  async create(@Body() data: Partial<User>): Promise<User | null> {
+  @UsePipes(new DTOValidationPipe())
+  @UseInterceptors(StringToNumberInterceptor)
+  @UseInterceptors(UserPasswordEncripInterceptor)
+  async create(@Body() data: CreateUserDto): Promise<User | null> {
     try {
       const newUser: User | null = await this.usersService.create(data);
       if (!newUser) {
@@ -68,10 +76,13 @@ export class UsersController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthHeaderGuard)
+  @UsePipes(IsUUIDPipe)
+  @UsePipes(new DTOValidationPipe())
+  @UseInterceptors(StringToNumerInterceptor)
   async update(
     @Param('id') id: UUID,
-    @Body() data: Partial<User>,
+    @Body() data: UpdateUserDto,
   ): Promise<User | null> {
     try {
       const updateUser: User | null = await this.usersService.update(id, data);
@@ -89,7 +100,8 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthHeaderGuard)
+  @UsePipes(IsUUIDPipe)
   async remove(@Param('id') id: UUID): Promise<{ id: UUID } | null> {
     try {
       const isRemoved = await this.usersService.remove(id);

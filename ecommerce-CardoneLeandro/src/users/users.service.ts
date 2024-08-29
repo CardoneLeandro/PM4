@@ -2,6 +2,7 @@ import { Injectable, Param } from '@nestjs/common';
 import { UsersRepository } from './repository/users.repository';
 import { User } from './entities/users.entity';
 import { UUID } from 'crypto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
     const user = await this.userRep.getUserById(id);
     return user;
   }
-  async create(data: Partial<User>): Promise<User | null> {
+  async create(data: CreateUserDto): Promise<User | null> {
     const newUser = await this.userRep.createUser(data);
     return newUser;
   }

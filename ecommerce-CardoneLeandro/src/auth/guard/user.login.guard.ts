@@ -5,14 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { SignInDTO } from '../dto/signIn.dto';
 import { UsersService } from 'src/users/users.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/users.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
-export class AuthGueard implements CanActivate {
+export class UserLoginGuard implements CanActivate {
   constructor(private readonly usersService: UsersService) {}
 
   canActivate(

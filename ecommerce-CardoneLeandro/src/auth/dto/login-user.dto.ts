@@ -1,22 +1,30 @@
-import { IsEmail, IsEmpty, IsString, IsStrongPassword, Length } from "class-validator";
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsStrongPassword,
+  Length,
+} from 'class-validator';
 
-export class LoginUserDTO{
+export class LoginUserDTO {
+  @IsNotEmpty({ message: 'email cannot be empty' })
+  @IsString({ message: 'email must be a string' })
+  @IsEmail({}, { message: 'email must be a valid email' })
+  email: string;
 
-    @IsEmpty({message:'email cannot be empty'})
-    @IsString({message:'email must be a string'})
-    @IsEmail({},{message:'email must be a valid email'})
-    email: string;
-
-    @IsEmpty({message:'password cannot be empty'})
-    @IsString({message:'password must be a string'})
-    @Length(8,15,{message:'password must be between 8 and 15 characters'})
-    //IsStrongPassword decorator does not have "maxLength" property
-    //@Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/,{message:'password must be a valid password'})
-    @IsStrongPassword({
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-    },{message:'password must be a valid password'})
-    password: string;
+  @IsNotEmpty({ message: 'password cannot be empty' })
+  @IsString({ message: 'password must be a string' })
+  @Length(8, 15, { message: 'password must be between 8 and 15 characters' })
+  //IsStrongPassword decorator does not have "maxLength" property
+  //@Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/,{message:'password must be a valid password'})
+  @IsStrongPassword(
+    {
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    },
+    { message: 'password must be a valid password' },
+  )
+  password: string;
 }

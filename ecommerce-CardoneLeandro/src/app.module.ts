@@ -9,7 +9,10 @@ import typeormConfig from 'config/typeorm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
-import { CustomValidationPipe } from './security/pipes/login-user.pipe';
+import { FilesModule } from './files/files.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { DTOValidationPipe } from './common/pipes/DTO-Validation.pipe';
+import { StringToNumberInterceptor } from './common/interceptor/string-toNumber.interceptor';
 
 @Module({
   imports: [
@@ -19,7 +22,7 @@ import { CustomValidationPipe } from './security/pipes/login-user.pipe';
     OrdersModule,
     ProductsModule,
     CategoriesModule,
-    
+
     // here we import the config module
     ConfigModule.forRoot({
       isGlobal: true,
@@ -31,16 +34,19 @@ import { CustomValidationPipe } from './security/pipes/login-user.pipe';
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
     }),
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [
-    // here we inject a custom provider
-    { // we declare a custom provider
-      provide:'DTO-ValidationPipe',
-      // we inject our custom validation pipe
-      useClass: CustomValidationPipe 
+    {
+      provide: 'DTO-ValidationPipe',
+      useClass: DTOValidationPipe,
     },
-    // here we inject all services
-    AppService],
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: StringToNumberInterceptor,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
