@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Category } from '../entities/categories.entity';
 import { categoriesExtractor } from '../../helpers/category-extractor.helper';
-import { seed } from '../../utils/pre-load.seed';
+import { seed } from '../../helpers/pre-load.seed';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 @Injectable()

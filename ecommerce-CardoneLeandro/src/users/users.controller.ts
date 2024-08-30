@@ -21,7 +21,7 @@ import { StringToNumberInterceptor } from '../common/interceptor/string-toNumber
 import { IsUUIDPipe } from 'src/common/pipes/isUUID.pipe';
 import { DTOValidationPipe } from 'src/common/pipes/DTO-Validation.pipe';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserPasswordEncripInterceptor } from './interceptor/user-passwordEncrip.interceptor';
+import { UserPasswordEncripInterceptor } from '../auth/interceptor/user-passwordEncrip.interceptor';
 
 @Controller('users')
 export class UsersController {
@@ -55,6 +55,8 @@ export class UsersController {
     }
   }
   //====>> encriptar contrasña
+  //==>> apartado migrado a auth/singup
+  //==> esta runa ya no es necesaria
   @Post()
   @UsePipes(new DTOValidationPipe())
   @UseInterceptors(StringToNumberInterceptor)
@@ -79,7 +81,7 @@ export class UsersController {
   @UseGuards(AuthHeaderGuard)
   @UsePipes(IsUUIDPipe)
   @UsePipes(new DTOValidationPipe())
-  @UseInterceptors(StringToNumerInterceptor)
+  @UseInterceptors(StringToNumberInterceptor)
   async update(
     @Param('id') id: UUID,
     @Body() data: UpdateUserDto,

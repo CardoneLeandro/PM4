@@ -13,10 +13,11 @@ export class DTOValidationPipe implements PipeTransform<any> {
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
-
+    //==>> if are workig this createuserDTO
     if (value.confirmPassword && value.password) {
+      //==>> check if confirm password and password exist, then check if they match
       if (value.confirmPassword !== value.password) {
-        throw new BadRequestException('Passwords do not match');
+        throw new BadRequestException('Passwords do not match'); //==>> if it doesn't match throw error
       }
     }
 

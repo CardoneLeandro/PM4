@@ -1,8 +1,34 @@
 //implementar en las rutas
 // todas excepto => 'users/post' | 'products/get' &  'products/get:id'
+
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+@Injectable()
+//==>AuthHeaderGuard ahora se extiende de la clase de AuthGuard por lo que hereda todos sus metodos
+//==> ('jwt') es el nombre de la estrategia de autenticacion
+export class AuthHeaderGuard extends AuthGuard('jwt') {
+  canActivate(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest();
+    const authHeader = request.headers['authorization'];
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Token no proporcionado o inválido');
+    }
+
+    return super.canActivate(context);
+  }
+}
+
+/*
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable, retry } from 'rxjs';
+import { JsonWebTokenService } from '../jsonWebToken/jsonWebToken.service';
 
 function validateLogin(
   req: Request,
@@ -36,3 +62,4 @@ export class AuthHeaderGuard implements CanActivate {
     return validateLogin(request);
   }
 }
+*/

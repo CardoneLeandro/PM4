@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ProductsRepository } from '../repository/products.repository';
 import { productsExtractor } from '../../helpers/products-extractor.helper';
-import { seed } from '../../utils/pre-load.seed';
-import { TLSFormatedDate } from 'src/helpers/date-functions.helper';
+import { seed } from '../../helpers/pre-load.seed';
+import { TLSFormatedDate } from 'src/utils/date-functions.util';
 
 interface preloadDetail {
   product: string;

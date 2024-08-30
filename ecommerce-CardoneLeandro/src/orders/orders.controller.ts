@@ -6,6 +6,7 @@ import {
   Param,
   NotFoundException,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -13,12 +14,14 @@ import { UUID } from 'crypto';
 import { Product } from 'src/products/entities/products.entity';
 import { DTOValidationPipe } from 'src/common/pipes/DTO-Validation.pipe';
 import { IsUUIDPipe } from 'src/common/pipes/isUUID.pipe';
+import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly orSv: OrdersService) {}
 
   @Post()
+  @UseGuards(AuthHeaderGuard)
   @UsePipes(new DTOValidationPipe())
   async create(@Body() DTO: CreateOrderDto) {
     const userId = DTO.userId;
@@ -36,6 +39,7 @@ export class OrdersController {
   }
 
   @Get(':id')
+  @UseGuards(AuthHeaderGuard)
   @UsePipes(IsUUIDPipe)
   findOne(@Param('id') id: string) {
     try {

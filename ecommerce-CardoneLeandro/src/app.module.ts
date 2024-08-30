@@ -10,9 +10,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 import { FilesModule } from './files/files.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { DTOValidationPipe } from './common/pipes/DTO-Validation.pipe';
-import { StringToNumberInterceptor } from './common/interceptor/string-toNumber.interceptor';
 
 @Module({
   imports: [
@@ -37,16 +34,6 @@ import { StringToNumberInterceptor } from './common/interceptor/string-toNumber.
     FilesModule,
   ],
   controllers: [AppController],
-  providers: [
-    {
-      provide: 'DTO-ValidationPipe',
-      useClass: DTOValidationPipe,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: StringToNumberInterceptor,
-    },
-    AppService,
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

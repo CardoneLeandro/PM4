@@ -1,3 +1,7 @@
+// CADUCADO
+// UTILIZADO PARA "VALIDAR" EN ACCESO A DETERMINADAS RUTAS.
+// REEMPLAZADO POR
+
 import {
   CanActivate,
   ExecutionContext,

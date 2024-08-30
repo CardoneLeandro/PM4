@@ -11,12 +11,14 @@ import { UUID } from 'crypto';
 import { ExistingProductGuard } from 'src/products/guards/existing-product.guard';
 import { IsUUIDPipe } from 'src/common/pipes/isUUID.pipe';
 import { CloudinaryUploadService } from './files.service';
+import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
 
 @Controller('files')
 export class FilesController {
   constructor(private readonly fileSv: CloudinaryUploadService) {}
   @Post('uploadImage/:id')
   @UsePipes(IsUUIDPipe)
+  @UseGuards(AuthHeaderGuard)
   @UseGuards(ExistingProductGuard)
   @UseInterceptors(FilesInterceptor('file'))
   async uploadFile(@Param('id') id: UUID, file) {

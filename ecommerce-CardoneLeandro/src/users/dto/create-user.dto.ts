@@ -9,7 +9,7 @@ import {
   min,
 } from 'class-validator';
 
-export class vCreateUserDto {
+export class CreateUserDto {
   @IsNotEmpty({ message: 'name is required' })
   @IsString({ message: 'name must be a string' })
   @Length(3, 50, { message: 'name must be between 3 and 80 characters' })

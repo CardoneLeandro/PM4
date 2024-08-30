@@ -1,7 +1,6 @@
 import {
   DataSource,
-  Repository,
-  ReturningStatementNotSupportedError,
+  Repository
 } from 'typeorm';
 import { Product } from '../entities/products.entity';
 import { Injectable } from '@nestjs/common';
@@ -9,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class ProductsRepository extends Repository<Product> {
   constructor(private dSource: DataSource) {
-    super(Product, dSource.createEntityManager());
+    super(Product, dSource.getRepository(Product).manager);
   }
 
   async addProduct(pData: Partial<Product>): Promise<Product> {
