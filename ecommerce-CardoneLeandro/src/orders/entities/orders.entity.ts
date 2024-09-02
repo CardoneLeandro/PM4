@@ -15,12 +15,13 @@ export class Order {
   id: string;
 
   @ManyToOne(() => User, (user) => user.orders)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ type: 'date', nullable: false })
-  date: string;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date: Date;
 
   @OneToOne(() => OrderDetail, { eager: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'order_detail_id' })
   orderDetail: OrderDetail;
 }

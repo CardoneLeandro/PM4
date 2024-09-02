@@ -13,8 +13,11 @@ import { AuthGuard } from '@nestjs/passport';
 //==> ('jwt') es el nombre de la estrategia de autenticacion
 export class AuthHeaderGuard extends AuthGuard('jwt') {
   canActivate(context: ExecutionContext) {
+    console.log('CARDONE =========> AuthHeaderGuard IN');
     const request = context.switchToHttp().getRequest();
+    console.log('CARDONE =========> AuthHeaderGuard request');
     const authHeader = request.headers['authorization'];
+    console.log('CARDONE =========> AuthHeaderGuard authHeader', authHeader);
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException('Token no proporcionado o inválido');

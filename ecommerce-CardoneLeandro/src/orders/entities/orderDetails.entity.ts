@@ -5,6 +5,7 @@ import {
   OneToOne,
   ManyToMany,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 import { Order } from 'src/orders/entities/orders.entity';
 import { Product } from 'src/products/entities/products.entity';
@@ -18,6 +19,7 @@ export class OrderDetail {
   price: number;
 
   @OneToOne(() => Order, (order) => order.orderDetail)
+  @JoinColumn({ name: 'order_id' })
   order: Order;
 
   @ManyToMany(() => Product, (product) => product.orderDetails)

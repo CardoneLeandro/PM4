@@ -3,6 +3,9 @@ import { ProductsRepository } from '../repository/products.repository';
 import { productsExtractor } from '../../helpers/products-extractor.helper';
 import { seed } from '../../helpers/pre-load.seed';
 import { TLSFormatedDate } from 'src/utils/date-functions.util';
+import { Category } from 'src/categories/entities/categories.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 interface preloadDetail {
   product: string;
@@ -20,7 +23,11 @@ interface preloadAudit {
 }
 @Injectable()
 export class ProductSeederService {
-  constructor(private readonly prodRp: ProductsRepository) {}
+  constructor(
+    private readonly prodRp: ProductsRepository,
+    @InjectRepository(Category)
+    private readonly catRp: Repository<Category>,
+  ) {}
 
   async preload() {
     let audit: preloadAudit = {
@@ -48,11 +55,29 @@ export class ProductSeederService {
           let inform: preloadDetail = {
             product: prod.name,
             date: TLSFormatedDate(),
-            status: 'Product allready exists',
+            status: 'Product already exists',
           };
           audit.preloadTryFailed += 1;
           audit.productsFailed.push(inform);
         } else {
+          // Verifica si la categoría existe
+          const category = await this.catRp.findOne({
+            where: { name: prod.category.name },
+          });
+          if (!category) {
+            let inform: preloadDetail = {
+              product: prod.name,
+              date: TLSFormatedDate(),
+              status: 'Category does not exist',
+            };
+            audit.preloadTryFailed += 1;
+            audit.productsFailed.push(inform);
+            continue;
+          }
+
+          // Asigna la categoría existente al producto
+          prod.category = category;
+
           const prodSeeded = await this.prodRp.addProduct(prod);
           let inform: preloadDetail = {
             product: prodSeeded.name,

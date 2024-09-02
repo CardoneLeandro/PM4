@@ -40,6 +40,7 @@ export class ImageInterceptor implements NestInterceptor {
     } catch (error) {
       throw new BadRequestException('Error during image upload');
     }
+    console.log("CARDONE =========>ADDIMAGE INTERCEPTOR OUT", request.body);
     return next.handle();
   }
 }

@@ -10,14 +10,18 @@ import { validate } from 'class-validator';
 @Injectable()
 export class DTOValidationPipe implements PipeTransform<any> {
   async transform(value: any, { metatype }: ArgumentMetadata) {
+    return this.validate(value, metatype);
+  }
+
+  async validate(value: any, metatype: any) {
+    console.log('CARDONE =========> dtoValidationpipe, validate value', value);
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
-    //==>> if are workig this createuserDTO
+
     if (value.confirmPassword && value.password) {
-      //==>> check if confirm password and password exist, then check if they match
       if (value.confirmPassword !== value.password) {
-        throw new BadRequestException('Passwords do not match'); //==>> if it doesn't match throw error
+        throw new BadRequestException('Passwords do not match');
       }
     }
 
@@ -41,6 +45,10 @@ export class DTOValidationPipe implements PipeTransform<any> {
       throw new BadRequestException(`Validation failed: ${errorMessages}`);
     }
 
+    console.log(
+      'CARDONE =========> dtoValidationpipe, validate value SUCCESS',
+      value,
+    );
     return value;
   }
 

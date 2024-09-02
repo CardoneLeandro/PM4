@@ -17,6 +17,10 @@ export class DeletePassordOnResponseInterceptor implements NestInterceptor {
       map((data) => {
         if (data && data.password) {
           delete data.password;
+          console.log(
+            'CARDONE =========> deletePassordOnResponseInterceptor DATA',
+            data,
+          );
           return data;
         }
       }),

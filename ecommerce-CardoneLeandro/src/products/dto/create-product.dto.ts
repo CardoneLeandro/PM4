@@ -9,10 +9,6 @@ import {
 } from 'class-validator';
 
 export class CreateProductDto {
-  @IsUUID('4', { message: 'El ID debe ser un UUID válido.' })
-  @IsNotEmpty({ message: 'El ID no puede estar vacío.' })
-  id: string;
-
   @IsString({ message: 'El nombre debe ser una cadena de texto.' })
   @MaxLength(50, { message: 'El nombre no puede tener más de 50 caracteres.' })
   @IsNotEmpty({ message: 'El nombre no puede estar vacío.' })

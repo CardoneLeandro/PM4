@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { Category } from '../entities/categories.entity';
 import { categoriesExtractor } from '../../helpers/category-extractor.helper';
 import { seed } from '../../helpers/pre-load.seed';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { CategoriesRepository } from '../repository/categories.repository';
 @Injectable()
 export class CategoriesSeederService {
   constructor(
-    @InjectRepository(Category)
-    private readonly catRp: Repository<Category>,
+    private readonly catRp: CategoriesRepository,
   ) {}
 
   async preload() {
@@ -21,6 +19,6 @@ export class CategoriesSeederService {
     for (const cat of newCategories) {
       await this.catRp.save({ name: cat.name });
     }
-    return;
+    return newCategories;
   }
 }

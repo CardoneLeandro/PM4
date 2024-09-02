@@ -8,7 +8,6 @@ import {
   Post,
   Put,
   Query,
-  UploadedFile,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -23,6 +22,7 @@ import { ImageInterceptor } from 'src/files/interceptor/image.interceptor';
 import { DTOValidationPipe } from 'src/common/pipes/DTO-Validation.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { AddCategoryIdonRequestInterceptor } from './interceptors/addCategoryIdOnReq.interceptor';
 
 @Controller('products')
 export class ProductsController {
@@ -31,11 +31,12 @@ export class ProductsController {
     private readonly prodSeedSv: ProductSeederService,
   ) {}
 
-  @Post('seed')
+  @Post('seeder')
   @UseGuards(AuthHeaderGuard)
-  async seedProducts(): Promise<void> {
+  async seedProducts(): Promise<any> {
     try {
-      await this.prodSeedSv.preload();
+      const audit = await this.prodSeedSv.preload();
+      return audit;
     } catch {
       throw new Error('An error occurred during the seeding process');
     }
@@ -64,8 +65,7 @@ export class ProductsController {
   }
 
   @Get(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
-  @UsePipes(IsUUIDPipe)
-  async getProductById(@Param('id') id: string): Promise<Product | null> {
+  async getProductById(@Param('id', new IsUUIDPipe()) id: string): Promise<Product | null> {
     try {
       const p = await this.prodSv.getProductById(id);
       if (!p) {
@@ -80,17 +80,18 @@ export class ProductsController {
 
   @Post() //=> INCORPORAR UN PIPE PARA VALIDAR EL ID ( EN ESTE CASO REVISAR SI CORRESPONDE PARA EL ID DE USUARIO, SI ES QUE NO VALIDA POR TOKEN)
   @UseGuards(AuthHeaderGuard)
+  @UseInterceptors(AddCategoryIdonRequestInterceptor)
   @UseInterceptors(ImageInterceptor)
   @UsePipes(new DTOValidationPipe())
   async createNewProduct(
     @Body() data: CreateProductDto,
   ): Promise<{ id: string } | null> {
     try {
-      const p: Product = await this.prodSv.createProduct(data);
-      if (!p) {
+      const newProduct: Product = await this.prodSv.createProduct(data);
+      if (!newProduct) {
         throw new Error('An error occurred during the creation process');
       }
-      return { id: p.id };
+      return newProduct ;
     } catch (e) {
       console.error(e);
       throw e;
@@ -99,10 +100,9 @@ export class ProductsController {
 
   @Put(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
   @UseGuards(AuthHeaderGuard)
-  @UsePipes(IsUUIDPipe)
   @UsePipes(new DTOValidationPipe())
   async updateProduct(
-    @Param('id') id: UUID,
+    @Param('id', new IsUUIDPipe()) id: UUID,
     @Body() data: UpdateProductDto,
   ): Promise<Partial<Product> | null> {
     try {
@@ -113,14 +113,15 @@ export class ProductsController {
       return { id: upP, ...data };
     } catch (e) {
       console.error(e);
+      console.log("CARDONE =========> updateProduct error message", e.message);
       throw e;
     }
   }
 
   @Delete(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
   @UseGuards(AuthHeaderGuard)
-  @UsePipes(IsUUIDPipe)
-  async deleteProduct(@Param('id') id: UUID): Promise<{ id: string } | null> {
+  async deleteProduct
+  (@Param('id', new IsUUIDPipe()) id: UUID): Promise<{ id: string } | null> {
     try {
       const delP: string = await this.prodSv.deleteProduct(id);
       if (!delP) {

@@ -1,56 +1,72 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, In } from 'typeorm';
 import { Order } from '../entities/orders.entity';
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entities/users.entity';
 import { Product } from 'src/products/entities/products.entity';
 import { OrderDetail } from 'src/orders/entities/orderDetails.entity';
-import { UUID } from 'crypto';
+
 @Injectable()
 export class OrdersRepository extends Repository<Order> {
-  constructor(private readonly dSource: DataSource) {
-    super(Order, dSource.getRepository(Order).manager);
+  constructor(private readonly dataSource: DataSource) {
+    super(Order, dataSource.getRepository(Order).manager);
   }
-  async addOrder(
+
+  async createOrder(
     userId: string,
-    productsId: Partial<Product>[],
+    productIds: string[], // IDs de productos para crear la orden
   ): Promise<Order | null> {
-    const u: User = await this.dSource
+    // Buscar usuario por ID
+    const user = await this.dataSource
       .getRepository(User)
       .findOneBy({ id: userId });
-    if (!u) {
-      throw new Error('user not found');
+    if (!user) {
+      throw new Error('User not found');
     }
-    const p: Product[] = await this.dSource
+
+    // Buscar productos por IDs
+    const products = await this.dataSource
       .getRepository(Product)
-      .findByIds(productsId);
-    if (p.length !== productsId.length) {
-      throw new Error('one or more products not found');
+      .findBy({ id: In(productIds) }); //==> operador IN busca en la lista de ids y los devuelve a FindBy
+    if (products.length !== productIds.length) {
+      throw new Error('One or more products not found');
     }
-    const Or = new Order();
-    Or.user = u;
-    Or.date = new Date().toISOString();
 
-    const OrDt = new OrderDetail();
-    OrDt.price = p.reduce((ttl, pr) => ttl + pr.price, 0);
-    OrDt.products = p;
+    // Crear una nueva orden
+    const newOrder = new Order();
+    newOrder.user = user;
+    newOrder.date = new Date(); // Fecha de la orden
 
-    const OrDtS = await this.dSource.getRepository(OrderDetail).save(OrDt);
+    // Crear detalles de la orden
+    const orderDetails = new OrderDetail();
+    orderDetails.price = products.reduce(
+      (totalPrice, product) => totalPrice + product.price,
+      0,
+    );
+    orderDetails.products = products;
 
-    Or.orderDetail = OrDtS;
+    // Guardar los detalles de la orden
+    const savedOrderDetails = await this.dataSource
+      .getRepository(OrderDetail)
+      .save(orderDetails);
 
-    const OrS = await this.save(Or);
+    // Asignar los detalles guardados a la orden
+    newOrder.orderDetail = savedOrderDetails;
 
-    return OrS;
+    // Guardar la orden
+    const savedOrder = await this.save(newOrder);
+
+    return savedOrder;
   }
 
-  async getOrder(id: string): Promise<Order | null> {
-    const Ord: Order | null = await this.findOne({
-      where: { id },
+  async getOrderById(orderId: string): Promise<Order | null> {
+    // Buscar orden por ID con detalles de la orden y productos relacionados
+    const order = await this.findOne({
+      where: { id: orderId },
       relations: ['orderDetail', 'orderDetail.products'],
     });
-    if (!Ord) {
+    if (!order) {
       throw new Error('Order not found');
     }
-    return Ord;
+    return order;
   }
 }

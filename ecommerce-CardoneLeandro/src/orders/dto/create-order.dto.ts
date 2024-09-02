@@ -1,11 +1,12 @@
 import { IsArray, IsNotEmpty, IsUUID } from 'class-validator';
-import { Product } from 'src/products/entities/products.entity';
-import { PrimaryColumn } from 'typeorm';
+
 export class CreateOrderDto {
-  @IsNotEmpty()
   @IsUUID()
+  @IsNotEmpty()
   userId: string;
 
   @IsArray()
-  products: [Partial<Product>];
+  @IsNotEmpty({ each: true })
+  @IsUUID('4', { each: true })
+  products: string[];
 }

@@ -7,6 +7,11 @@ import { ProductsRepository } from 'src/products/repository/products.repository'
 
 @Module({
   controllers: [FilesController],
-  providers: [CloudinaryConfig, CloudinaryUploadService, ProductsService,ProductsRepository],
+  providers: [
+    CloudinaryConfig,
+    CloudinaryUploadService,
+    ProductsService,
+    ProductsRepository,
+  ],
 })
 export class FilesModule {}

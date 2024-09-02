@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CategoriesSeederService } from './seeder/categories-seeder.service';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
 
 @Controller('categories')
 export class CategoriesController {
@@ -10,20 +12,22 @@ export class CategoriesController {
   ) {}
 
   @Post('seeder')
+  @UseGuards(AuthHeaderGuard)
   async seedCategories() {
     // here we take an arr of string with the names of the categories
-    await this.catSeedSv.preload();
-    return 'categories seeded';
+    const newCategories = await this.catSeedSv.preload();
+    return {"newCategories": newCategories};
   }
 
   @Post()
   async addCategories(@Body() categoriesNames: string[]) {
     // here we take an arr of string with the names of the categories
+    const newCategories = []
     for (const name of categoriesNames) {
       // then we pass each name to the service to create a new cartegory
-      await this.catSv.addCategory({ name }); // here recieves the name of the category and pass to the service
+      newCategories.push(await this.catSv.addCategory({ name }))  // here recieves the name of the category and pass to the service
     }
-    return 'categories seeded';
+    return newCategories ;
   }
 
   @Get()

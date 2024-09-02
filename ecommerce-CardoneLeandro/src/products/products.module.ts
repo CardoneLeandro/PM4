@@ -7,9 +7,12 @@ import { ProductsRepository } from './repository/products.repository';
 import { ProductSeederService } from './seeder/product-seeder.service';
 import { CloudinaryConfig } from 'config/coudinary.config';
 import { CloudinaryUploadService } from '../files/files.service';
+import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
+import { CategoriesModule } from 'src/categories/categories.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product])], // Importa la entidad
+  imports: [TypeOrmModule.forFeature([Product]), CategoriesModule], // Importa la entidad
+
   controllers: [ProductsController],
   providers: [
     ProductsService,
@@ -17,6 +20,7 @@ import { CloudinaryUploadService } from '../files/files.service';
     ProductSeederService,
     CloudinaryConfig,
     CloudinaryUploadService,
+    AuthHeaderGuard,
   ],
 })
 export class ProductsModule {}

@@ -1,3 +1,5 @@
+npm run generate:migration --name=<entityTable>
+
 Para las rutas PUT donde debes actualizar partes de un objeto, puedes utilizar PartialType de @nestjs/mapped-types. Este utilitario genera un tipo basado en el DTO original, pero marca todos los campos como opcionales. Esto te permite recibir un objeto con campos incompletos sin requerir que todos estén presentes.
  La función PartialType toma un DTO existente y genera una nueva clase DTO donde todos los campos son opcionales. Esto permite que la información entrante en una ruta PUT o PATCH no tenga que incluir todos los campos definidos en el DTO original, pero aún conserva las reglas de validación para aquellos campos que sí estén presentes.
 

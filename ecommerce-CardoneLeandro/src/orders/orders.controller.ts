@@ -25,7 +25,7 @@ export class OrdersController {
   @UsePipes(new DTOValidationPipe())
   async create(@Body() DTO: CreateOrderDto) {
     const userId = DTO.userId;
-    const products: Partial<Product>[] = DTO.products;
+    const products: string[] = DTO.products;
     try {
       const newOrder = await this.orSv.create(userId, products);
       if (!newOrder) {
