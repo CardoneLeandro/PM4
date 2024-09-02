@@ -10,11 +10,10 @@ import {
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UUID } from 'crypto';
-import { Product } from 'src/products/entities/products.entity';
 import { DTOValidationPipe } from 'src/common/pipes/DTO-Validation.pipe';
 import { IsUUIDPipe } from 'src/common/pipes/isUUID.pipe';
 import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
+import { Product } from 'src/products/entities/products.entity';
 
 @Controller('orders')
 export class OrdersController {
@@ -24,8 +23,9 @@ export class OrdersController {
   @UseGuards(AuthHeaderGuard)
   @UsePipes(new DTOValidationPipe())
   async create(@Body() DTO: CreateOrderDto) {
+    console.log('CARDONE =========> ORDERS CONTROLLER IN, DTO', DTO);
     const userId = DTO.userId;
-    const products: string[] = DTO.products;
+    const products: Partial<Product>[] = DTO.products;
     try {
       const newOrder = await this.orSv.create(userId, products);
       if (!newOrder) {
@@ -40,17 +40,16 @@ export class OrdersController {
 
   @Get(':id')
   @UseGuards(AuthHeaderGuard)
-  @UsePipes(IsUUIDPipe)
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new IsUUIDPipe()) id: string) {
     try {
-      const or = this.orSv.findOne(id);
-      if (!or) {
+      const order = this.orSv.findOne(id);
+      if (!order) {
         throw new Error(`Order not found with id ${id}}`);
       }
-      return or;
-    } catch (e) {
-      console.error(e);
-      throw new NotFoundException(e.message);
+      return order;
+    } catch (error) {
+      console.error(error);
+      throw new NotFoundException(error.message);
     }
   }
 }

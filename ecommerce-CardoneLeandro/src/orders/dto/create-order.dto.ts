@@ -1,4 +1,5 @@
 import { IsArray, IsNotEmpty, IsUUID } from 'class-validator';
+import { Product } from 'src/products/entities/products.entity';
 
 export class CreateOrderDto {
   @IsUUID()
@@ -7,6 +8,5 @@ export class CreateOrderDto {
 
   @IsArray()
   @IsNotEmpty({ each: true })
-  @IsUUID('4', { each: true })
-  products: string[];
+  products: Partial<Product>[];
 }

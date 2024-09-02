@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ProductsRepository } from '../repository/products.repository';
-import { productsExtractor } from '../../helpers/products-extractor.helper';
-import { seed } from '../../helpers/pre-load.seed';
-import { TLSFormatedDate } from 'src/utils/date-functions.util';
+import { productsExtractor } from '../../common/helpers/products-extractor.helper';
+import { seed } from '../../common/helpers/pre-load.seed';
+import { TLSFormatedDate } from 'src/common/utils/date-functions.util';
 import { Category } from 'src/categories/entities/categories.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -77,6 +77,7 @@ export class ProductSeederService {
 
           // Asigna la categoría existente al producto
           prod.category = category;
+          console.log('CARDONE =========>SEEDER PROD.CATEGORY', prod.category);
 
           const prodSeeded = await this.prodRp.addProduct(prod);
           let inform: preloadDetail = {
@@ -99,6 +100,7 @@ export class ProductSeederService {
     }
     audit.statusMessage = 'Preload successfully finished';
     audit.preloadDate = TLSFormatedDate();
+
     return audit;
   }
 }

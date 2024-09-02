@@ -6,11 +6,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import jwtConfig from 'config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
-import { CreateUserMiddleware } from './middleware/create-User.middleware';
+import { CreateUserMiddleware } from '../common/middlewares/create-User.middleware';
 import { JsonWebTokenService } from './jsonWebToken/jsonWebToken.service';
 import { addJWTInterceptor } from './interceptor/addJWT.interceptor';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { RemoveRoleInterceptor } from 'src/common/interceptor/remove-role.interceptor';
 
 @Module({
   controllers: [AuthController],
@@ -22,6 +23,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     JsonWebTokenService,
     addJWTInterceptor,
     JwtStrategy,
+    RemoveRoleInterceptor,
   ],
 
   // ===> import and register jwt module
@@ -39,6 +41,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
+  exports: [JwtModule, JwtStrategy, PassportModule],
 })
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {

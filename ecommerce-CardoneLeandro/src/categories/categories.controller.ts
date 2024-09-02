@@ -16,18 +16,18 @@ export class CategoriesController {
   async seedCategories() {
     // here we take an arr of string with the names of the categories
     const newCategories = await this.catSeedSv.preload();
-    return {"newCategories": newCategories};
+    return { newCategories: newCategories };
   }
 
   @Post()
   async addCategories(@Body() categoriesNames: string[]) {
     // here we take an arr of string with the names of the categories
-    const newCategories = []
+    const newCategories = [];
     for (const name of categoriesNames) {
       // then we pass each name to the service to create a new cartegory
-      newCategories.push(await this.catSv.addCategory({ name }))  // here recieves the name of the category and pass to the service
+      newCategories.push(await this.catSv.addCategory({ name })); // here recieves the name of the category and pass to the service
     }
-    return newCategories ;
+    return newCategories;
   }
 
   @Get()

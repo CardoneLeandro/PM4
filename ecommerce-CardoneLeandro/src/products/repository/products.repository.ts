@@ -11,17 +11,20 @@ export class ProductsRepository extends Repository<Product> {
   async addProduct(pData: Partial<Product>): Promise<Product> {
     const newProduct = this.create(pData);
     await this.save(newProduct);
-    const createdProduct = await this.findOne({where: {id: newProduct.id}, relations: ['category']});
+    const createdProduct = await this.findOne({
+      where: { id: newProduct.id },
+      relations: ['category'],
+    });
     return createdProduct;
   }
 
   async getProducts(page: number, limit: number): Promise<Product[]> {
     const skip = (page - 1) * limit;
-    return await this.find({relations: ['category'], skip, take: limit });
+    return await this.find({ relations: ['category'], skip, take: limit });
   }
 
   async getProductById(id: string): Promise<Product | null> {
-    return await this.findOne({where: {id}, relations: ['category']});
+    return await this.findOne({ where: { id }, relations: ['category'] });
   }
 
   async updateProduct(

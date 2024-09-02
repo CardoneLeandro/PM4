@@ -10,6 +10,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 import { FilesModule } from './files/files.module';
+import { ProductSeederService } from './products/seeder/product-seeder.service';
+import { CategoriesSeederService } from './categories/seeder/categories-seeder.service';
+import { OrderDetail } from './orders/entities/orderDetails.entity';
 
 @Module({
   imports: [
@@ -19,6 +22,7 @@ import { FilesModule } from './files/files.module';
     OrdersModule,
     ProductsModule,
     CategoriesModule,
+
 
     // here we import the config module
     ConfigModule.forRoot({
@@ -34,6 +38,6 @@ import { FilesModule } from './files/files.module';
     FilesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ],
 })
 export class AppModule {}

@@ -6,6 +6,51 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { CloudinaryUploadService } from '../files.service';
+import { Observable, from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+@Injectable()
+export class ImageInterceptor implements NestInterceptor {
+  constructor(private readonly imgUploadSv: CloudinaryUploadService) {}
+
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler<any>,
+  ): Observable<any> {
+    const request = context.switchToHttp().getRequest();
+    const file = request.file;
+
+    if (!file) {
+      request.body.imgUrl = 'https://ibb.co/SrmQYPM';
+      return next.handle();
+    }
+
+    if (file.size > 200 * 1024) {
+      throw new BadRequestException('File size exceeds the limit of 200kb');
+    }
+
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      throw new BadRequestException('Invalid file type');
+    }
+
+    return from(this.imgUploadSv.uploadFile(file)).pipe(
+      switchMap((imgUrl) => {
+        request.body.imgUrl = imgUrl;
+        return next.handle();
+      }),
+    );
+  }
+}
+
+/*import {
+  BadRequestException,
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
+import { CloudinaryUploadService } from '../files.service';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -17,6 +62,9 @@ export class ImageInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
+    console.log('CARDONE =========>ADDIMAGE INTERCEPTOR IN REQUEST.BODY', request.body);
+    console.log("CARDONE =========> ADDIMAGE INTERCEPTOR IN REQUEST.FILE", request.file);
+    console.log("CARDONE =========>  ADDIMAGE INTERCEPTOR IN REQUEST.FORM", request.form);
     try {
       if (request.file) {
         // Validar el tamaño de la imagen (no mayor a 200kb)
@@ -40,10 +88,10 @@ export class ImageInterceptor implements NestInterceptor {
     } catch (error) {
       throw new BadRequestException('Error during image upload');
     }
-    console.log("CARDONE =========>ADDIMAGE INTERCEPTOR OUT", request.body);
+    console.log('CARDONE =========>ADDIMAGE INTERCEPTOR OUT', request.body);
     return next.handle();
   }
-}
+}*/
 
 // este interceptor se ocupa de corroborar la exitencia de un archivo en el momento previo al ingreso de la request al controlador.
 //en caso de hayarse, el interceptor verifica si cumple con los requisitos de formato y tamaño, de no ser asi lanza un error.

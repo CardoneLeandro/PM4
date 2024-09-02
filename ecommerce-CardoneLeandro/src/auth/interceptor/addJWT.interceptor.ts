@@ -1,3 +1,5 @@
+//*     INTERCEPTOR ENCARGADO DE CARGAR EL TOKEN EN LA RESPUESTA DE INICIO DE SESION
+
 import {
   CallHandler,
   ExecutionContext,
@@ -14,23 +16,14 @@ export class addJWTInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return (
-      console.log('CARDONE =========> addJWTInterceptor IN'),
       next.handle().pipe(
         map(async (user) => {
           try {
-            console.log('CARDONE =========> addJWTInterceptor IN TRY ', user);
             // ==> then gereate token
             const token = await this.jwtSv.generateJwt(user);
             // and return the user with the new token
-            console.log(
-              'CARDONE =========> addJWTInterceptor OUT USER / TOKEN ',
-              user,
-              token,
-            );
             return { user, token };
-          } catch (error) {
-            console.log('CARDONE =========> addJWTInterceptor ERROR ', error);
-          }
+          } catch (error) {throw error({message: 'An error has ben ocurred during the creation of the token', error});}
         }),
       )
     );

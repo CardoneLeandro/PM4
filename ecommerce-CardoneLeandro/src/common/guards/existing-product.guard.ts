@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { NotFoundError } from 'rxjs';
 
-import { ProductsService } from '../products.service';
+import { ProductsService } from '../../products/products.service';
 
 @Injectable()
 export class ExistingProductGuard implements CanActivate {

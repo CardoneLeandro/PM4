@@ -1,3 +1,6 @@
+//*     DTO DE INICIO DE SESION
+
+
 import {
   IsEmail,
   IsNotEmpty,
@@ -24,7 +27,7 @@ export class LoginUserDTO {
       minNumbers: 1,
       minSymbols: 1,
     },
-    { message: 'password must be a valid password' },
+    { message: 'password must be contain at least 1 uppercase, 1 lowercase, 1 number and 1 symbol' },
   )
   password: string;
 }
