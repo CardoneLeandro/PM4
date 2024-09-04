@@ -23,6 +23,7 @@ import { OrderDetail } from './orders/entities/orderDetails.entity';
     ProductsModule,
     CategoriesModule,
 
+
     // here we import the config module
     ConfigModule.forRoot({
       isGlobal: true,
@@ -37,6 +38,6 @@ import { OrderDetail } from './orders/entities/orderDetails.entity';
     FilesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ],
 })
 export class AppModule {}

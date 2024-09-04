@@ -15,6 +15,7 @@ export class addJWTInterceptor implements NestInterceptor {
   constructor(private readonly jwtSv: JsonWebTokenService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+<<<<<<< HEAD
     return next.handle().pipe(
       map(async (user) => {
         try {
@@ -30,6 +31,19 @@ export class addJWTInterceptor implements NestInterceptor {
           });
         }
       }),
+=======
+    return (
+      next.handle().pipe(
+        map(async (user) => {
+          try {
+            // ==> then gereate token
+            const token = await this.jwtSv.generateJwt(user);
+            // and return the user with the new token
+            return { user, token };
+          } catch (error) {throw error({message: 'An error has ben ocurred during the creation of the token', error});}
+        }),
+      )
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
     );
   }
 }

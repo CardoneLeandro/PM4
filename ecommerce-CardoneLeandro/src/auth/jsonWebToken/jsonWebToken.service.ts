@@ -1,5 +1,9 @@
 //*     SERVICIO DE CREACION DE JSON WEB TOKEN
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';

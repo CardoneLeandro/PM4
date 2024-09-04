@@ -18,11 +18,15 @@ import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
     ProductsRepository,
     AuthHeaderGuard,
   ],
+<<<<<<< HEAD
   exports: [
     CategoriesService,
     CategoriesRepository,
     TypeOrmModule,
     CategoriesSeederService,
   ],
+=======
+  exports: [CategoriesService, CategoriesRepository, TypeOrmModule, CategoriesSeederService],
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
 })
 export class CategoriesModule {}

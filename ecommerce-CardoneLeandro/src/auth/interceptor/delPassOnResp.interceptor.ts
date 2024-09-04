@@ -1,3 +1,5 @@
+//*     INTERCEPTOR ENCARGADO DE ELIMINAR EL PASSWORD EN LA RESPUESTA DE LOS USUARIOS
+
 import {
   CallHandler,
   ExecutionContext,

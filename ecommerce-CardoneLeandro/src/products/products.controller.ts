@@ -85,14 +85,24 @@ export class ProductsController {
 
   @Post() //=> INCORPORAR UN PIPE PARA VALIDAR EL ID ( EN ESTE CASO REVISAR SI CORRESPONDE PARA EL ID DE USUARIO, SI ES QUE NO VALIDA POR TOKEN)
   @UseGuards(AuthHeaderGuard)
+<<<<<<< HEAD
   @UseInterceptors(AddCategoryIdonRequestInterceptor)
   @UseInterceptors(FileInterceptor('image'), ImageInterceptor)
+=======
+  @UseInterceptors(
+    AddCategoryIdonRequestInterceptor,
+    FileInterceptor('image'),
+    ImageInterceptor,
+  )
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
   @UsePipes(new DTOValidationPipe())
   async createNewProduct(
     @UploadedFile() file: Express.Multer.File,
     @Body() data: CreateProductDto,
   ): Promise<{ id: string } | null> {
     try {
+      console.log('CARDONE =========> createNewProduct IN DTO', data);
+      console.log('CARDONE =========> createNewProduct IN FILE', file);
       const newProduct: Product = await this.prodSv.createProduct(data);
       if (!newProduct) {
         throw new Error('An error occurred during the creation process');
@@ -105,8 +115,13 @@ export class ProductsController {
   }
 
   @Put(':id')
+<<<<<<< HEAD
   @UseGuards(RolesGuard)
   @UseInterceptors(FileInterceptor('image'), ImageInterceptor)
+=======
+  @UseInterceptors(FileInterceptor('image'), ImageInterceptor)
+  @UseGuards(RolesGuard)
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
   @UsePipes(new DTOValidationPipe())
   async updateProduct(
     @Param('id', new IsUUIDPipe()) id: UUID,

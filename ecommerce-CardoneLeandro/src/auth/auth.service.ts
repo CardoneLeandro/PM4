@@ -8,6 +8,7 @@ import { UserRole } from 'src/common/enum/user.role';
 export class AuthService {
   constructor(readonly uRep: UsersRepository) {}
 
+<<<<<<< HEAD
   async onApplicationBootstrap() {
     console.log(
       'AUTH SERVICE ON APPLICATION BOOTSTRAP ============>',
@@ -28,6 +29,9 @@ export class AuthService {
     }
   }
 
+=======
+  //?     RUTA CREADA PARA VALIDAR LA EXITENCIA DE USUSARIOS EN LA BASE DE DATOS
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
   async validateUser(email: string): Promise<User | null> {
     const user = await this.uRep.findOneBy({ email });
     return user;

@@ -1,5 +1,9 @@
 //*     DTO DE INICIO DE SESION
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
 import {
   IsEmail,
   IsNotEmpty,
@@ -26,10 +30,14 @@ export class LoginUserDTO {
       minNumbers: 1,
       minSymbols: 1,
     },
+<<<<<<< HEAD
     {
       message:
         'password must be contain at least 1 uppercase, 1 lowercase, 1 number and 1 symbol',
     },
+=======
+    { message: 'password must be contain at least 1 uppercase, 1 lowercase, 1 number and 1 symbol' },
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
   )
   password: string;
 }

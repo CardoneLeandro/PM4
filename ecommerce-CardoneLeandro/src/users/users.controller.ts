@@ -62,9 +62,15 @@ export class UsersController {
   //==> esta runa ya no es necesaria
   @Post('ruta-fuera-de-uso')
   @UsePipes(new DTOValidationPipe())
+<<<<<<< HEAD
   @UseInterceptors(StringToNumberInterceptor)
   @UseInterceptors(UserPasswordEncripInterceptor)
   @UseInterceptors(RemoveRoleInterceptor)
+=======
+  @UseInterceptors(StringToNumberInterceptor,
+  UserPasswordEncripInterceptor,
+  RemoveRoleInterceptor)
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
   async create(@Body() data: CreateUserDto): Promise<User | null> {
     try {
       const newUser: User | null = await this.usersService.create(data);
@@ -84,8 +90,14 @@ export class UsersController {
   @Put(':id')
   @UseGuards(AuthHeaderGuard)
   @UsePipes(new DTOValidationPipe())
+<<<<<<< HEAD
   @UseInterceptors(StringToNumberInterceptor)
   @UseInterceptors(RemoveRoleInterceptor)
+=======
+  @UseInterceptors(
+    StringToNumberInterceptor,
+    RemoveRoleInterceptor)
+>>>>>>> 43f08683d353a78355d56b7f75990ed2bfa75512
   async update(
     @Param('id', new IsUUIDPipe()) id: UUID,
     @Body() data: UpdateUserDto,
