@@ -11,7 +11,18 @@ import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';
 @Module({
   imports: [TypeOrmModule.forFeature([Category])], //thats how we call the entity
   controllers: [CategoriesController],
-  providers: [CategoriesSeederService, CategoriesService, CategoriesRepository, ProductsRepository, AuthHeaderGuard],
-  exports: [CategoriesService, CategoriesRepository, TypeOrmModule],
+  providers: [
+    CategoriesSeederService,
+    CategoriesService,
+    CategoriesRepository,
+    ProductsRepository,
+    AuthHeaderGuard,
+  ],
+  exports: [
+    CategoriesService,
+    CategoriesRepository,
+    TypeOrmModule,
+    CategoriesSeederService,
+  ],
 })
 export class CategoriesModule {}

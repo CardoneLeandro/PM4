@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Category } from '../entities/categories.entity';
-import { categoriesExtractor } from '../../helpers/category-extractor.helper';
-import { seed } from '../../helpers/pre-load.seed';
+import { categoriesExtractor } from '../../common/helpers/category-extractor.helper';
+import { seed } from '../../common/helpers/pre-load.seed';
 import { CategoriesRepository } from '../repository/categories.repository';
 @Injectable()
 export class CategoriesSeederService {
-  constructor(
-    private readonly catRp: CategoriesRepository,
-  ) {}
+  constructor(private readonly catRp: CategoriesRepository) {}
 
   async preload() {
     const seedOfCategories: Category[] = categoriesExtractor(seed);

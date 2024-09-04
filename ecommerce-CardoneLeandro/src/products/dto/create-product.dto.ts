@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsDecimal,
 } from 'class-validator';
+import { Category } from 'src/categories/entities/categories.entity';
 
 export class CreateProductDto {
   @IsString({ message: 'El nombre debe ser una cadena de texto.' })
@@ -36,7 +37,11 @@ export class CreateProductDto {
   @IsOptional()
   imgUrl?: string;
 
-  @IsUUID('4', { message: 'El ID de la categoría debe ser un UUID válido.' })
-  @IsNotEmpty({ message: 'El ID de la categoría no puede estar vacío.' })
-  category_id: string;
+  //!     INCONSISTENCIA CON LA HW
+  @IsNotEmpty({ message: 'La categoria no puede estar vacia' })
+  category: Category;
+
+  // @IsUUID('4', { message: 'El ID de la categoría debe ser un UUID válido.' })
+  // @IsNotEmpty({ message: 'El ID de la categoría no puede estar vacío.' })
+  // category_id: string;
 }

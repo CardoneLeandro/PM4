@@ -1,22 +1,21 @@
 import {
-  CallHandler,
-  ExecutionContext,
   Injectable,
   NestInterceptor,
+  ExecutionContext,
+  CallHandler,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 @Injectable()
-export class DeletePassordOnResponseInterceptor implements NestInterceptor {
+export class RemoveRoleInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
       map((data) => {
-        if (data && data.password) {
-          delete data.password;
+        if (data && data.role) {
+          delete data.role;
           return data;
         }
       }),

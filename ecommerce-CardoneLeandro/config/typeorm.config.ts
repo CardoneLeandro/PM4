@@ -13,27 +13,27 @@ const config = {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    logging: true,
+    logging: false,
     entities: ['dist/**/*.entity{.ts,.js}'],
     migrations: ['dist/migrations/*{.ts,.js}'],
     synchronize: true,
-    //dropSchema: true,
+    dropSchema: true,
   };
+  
+  
+  
+  export default registerAs('typeorm', () => config);
+  
+  export const connectionSource = new DataSource(config as DataSourceOptions);
 
 
 
-export default registerAs('typeorm', () => config);
-
-export const connectionSource = new DataSource(config as DataSourceOptions);
-
-
-
-
-
-
-
-
-// const connectionPoint = new DataSource(config as DataSourceOptions);
+  
+  
+  
+  
+  
+  // const connectionPoint = new DataSource(config as DataSourceOptions);
 // connectionPoint.initialize()
 // .then(() => {
 //     let now = new Date().toLocaleString('es-AR',{timeZone: 'America/Argentina/Buenos_Aires',});

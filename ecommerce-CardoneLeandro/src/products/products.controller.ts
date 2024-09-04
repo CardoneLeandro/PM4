@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -23,6 +24,8 @@ import { DTOValidationPipe } from 'src/common/pipes/DTO-Validation.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AddCategoryIdonRequestInterceptor } from './interceptors/addCategoryIdOnReq.interceptor';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
@@ -65,7 +68,9 @@ export class ProductsController {
   }
 
   @Get(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
-  async getProductById(@Param('id', new IsUUIDPipe()) id: string): Promise<Product | null> {
+  async getProductById(
+    @Param('id', new IsUUIDPipe()) id: string,
+  ): Promise<Product | null> {
     try {
       const p = await this.prodSv.getProductById(id);
       if (!p) {
@@ -81,9 +86,10 @@ export class ProductsController {
   @Post() //=> INCORPORAR UN PIPE PARA VALIDAR EL ID ( EN ESTE CASO REVISAR SI CORRESPONDE PARA EL ID DE USUARIO, SI ES QUE NO VALIDA POR TOKEN)
   @UseGuards(AuthHeaderGuard)
   @UseInterceptors(AddCategoryIdonRequestInterceptor)
-  @UseInterceptors(ImageInterceptor)
+  @UseInterceptors(FileInterceptor('image'), ImageInterceptor)
   @UsePipes(new DTOValidationPipe())
   async createNewProduct(
+    @UploadedFile() file: Express.Multer.File,
     @Body() data: CreateProductDto,
   ): Promise<{ id: string } | null> {
     try {
@@ -91,15 +97,16 @@ export class ProductsController {
       if (!newProduct) {
         throw new Error('An error occurred during the creation process');
       }
-      return newProduct ;
+      return newProduct;
     } catch (e) {
       console.error(e);
       throw e;
     }
   }
 
-  @Put(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
-  @UseGuards(AuthHeaderGuard)
+  @Put(':id')
+  @UseGuards(RolesGuard)
+  @UseInterceptors(FileInterceptor('image'), ImageInterceptor)
   @UsePipes(new DTOValidationPipe())
   async updateProduct(
     @Param('id', new IsUUIDPipe()) id: UUID,
@@ -113,15 +120,16 @@ export class ProductsController {
       return { id: upP, ...data };
     } catch (e) {
       console.error(e);
-      console.log("CARDONE =========> updateProduct error message", e.message);
+      console.log('CARDONE =========> updateProduct error message', e.message);
       throw e;
     }
   }
 
   @Delete(':id') //=> INCORPORAR UN PIPE PARA VALIDAR EL ID
   @UseGuards(AuthHeaderGuard)
-  async deleteProduct
-  (@Param('id', new IsUUIDPipe()) id: UUID): Promise<{ id: string } | null> {
+  async deleteProduct(
+    @Param('id', new IsUUIDPipe()) id: UUID,
+  ): Promise<{ id: string } | null> {
     try {
       const delP: string = await this.prodSv.deleteProduct(id);
       if (!delP) {

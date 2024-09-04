@@ -13,6 +13,7 @@ export class CloudinaryUploadService {
   // De este modo se puede crear el producto en la base de datos con la imagen archivada.
   // En caso de no haber una imagen, el interceptor añade una url predefinida.
   async uploadFile(file: Express.Multer.File): Promise<string> {
+    console.log('UPLOADFILE');
     const result: UploadApiResponse = await new Promise((resolve, reject) => {
       const uploadImage = v2.uploader.upload_stream(
         { resource_type: 'auto' },

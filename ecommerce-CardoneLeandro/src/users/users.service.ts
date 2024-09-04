@@ -33,4 +33,9 @@ export class UsersService {
   async getUserByEmail(email: string): Promise<User> {
     return await this.userRep.getUserByEmail(email);
   }
+
+  async adminUpdate(id: UUID): Promise<User | null> {
+    const updatedUser = await this.userRep.adminUpdate(id);
+    return updatedUser;
+  }
 }

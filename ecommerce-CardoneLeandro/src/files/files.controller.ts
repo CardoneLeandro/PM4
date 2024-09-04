@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UUID } from 'crypto';
-import { ExistingProductGuard } from 'src/products/guards/existing-product.guard';
+import { ExistingProductGuard } from 'src/common/guards/existing-product.guard';
 import { IsUUIDPipe } from 'src/common/pipes/isUUID.pipe';
 import { CloudinaryUploadService } from './files.service';
 import { AuthHeaderGuard } from 'src/auth/guard/auth-headers.guard';

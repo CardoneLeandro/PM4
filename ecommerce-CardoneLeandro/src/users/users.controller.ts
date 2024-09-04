@@ -22,13 +22,15 @@ import { IsUUIDPipe } from 'src/common/pipes/isUUID.pipe';
 import { DTOValidationPipe } from 'src/common/pipes/DTO-Validation.pipe';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserPasswordEncripInterceptor } from '../auth/interceptor/user-passwordEncrip.interceptor';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { RemoveRoleInterceptor } from 'src/common/interceptor/remove-role.interceptor';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @UseGuards(AuthHeaderGuard)
+  @UseGuards(RolesGuard)
   async findAll(): Promise<User[] | null> {
     try {
       return this.usersService.findAll();
@@ -38,10 +40,11 @@ export class UsersController {
       );
     }
   }
+
   @Get(':id')
   @UseGuards(AuthHeaderGuard)
-  @UsePipes(IsUUIDPipe)
-  async findOne(@Param('id') id: UUID): Promise<User | null> {
+  @UseInterceptors(RemoveRoleInterceptor)
+  async findOne(@Param('id', new IsUUIDPipe()) id: UUID): Promise<User | null> {
     try {
       const user = await this.usersService.findOne(id);
       if (!user) {
@@ -57,10 +60,11 @@ export class UsersController {
   //====>> encriptar contrasña
   //==>> apartado migrado a auth/singup
   //==> esta runa ya no es necesaria
-  @Post()
+  @Post('ruta-fuera-de-uso')
   @UsePipes(new DTOValidationPipe())
   @UseInterceptors(StringToNumberInterceptor)
   @UseInterceptors(UserPasswordEncripInterceptor)
+  @UseInterceptors(RemoveRoleInterceptor)
   async create(@Body() data: CreateUserDto): Promise<User | null> {
     try {
       const newUser: User | null = await this.usersService.create(data);
@@ -79,11 +83,11 @@ export class UsersController {
 
   @Put(':id')
   @UseGuards(AuthHeaderGuard)
-  @UsePipes(IsUUIDPipe)
   @UsePipes(new DTOValidationPipe())
   @UseInterceptors(StringToNumberInterceptor)
+  @UseInterceptors(RemoveRoleInterceptor)
   async update(
-    @Param('id') id: UUID,
+    @Param('id', new IsUUIDPipe()) id: UUID,
     @Body() data: UpdateUserDto,
   ): Promise<User | null> {
     try {
@@ -103,8 +107,10 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(AuthHeaderGuard)
-  @UsePipes(IsUUIDPipe)
-  async remove(@Param('id') id: UUID): Promise<{ id: UUID } | null> {
+  @UseInterceptors(RemoveRoleInterceptor)
+  async remove(
+    @Param('id', new IsUUIDPipe()) id: UUID,
+  ): Promise<{ id: UUID } | null> {
     try {
       const isRemoved = await this.usersService.remove(id);
       if (!isRemoved) {

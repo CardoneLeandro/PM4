@@ -3,6 +3,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../entities/users.entity';
 import { UUID } from 'crypto';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { UserRole } from '../../common/enum/user.role';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
@@ -47,5 +48,12 @@ export class UsersRepository extends Repository<User> {
     }
     await this.delete({ id });
     return { id };
+  }
+
+  //?     RUTA CREADA PARA PUEBAS DE SEGURIDAD
+  async adminUpdate(id: UUID): Promise<User | null> {
+    await this.update({ id }, { role: UserRole.ADMIN });
+    const admin = await this.findOneBy({ id });
+    return admin;
   }
 }

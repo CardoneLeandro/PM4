@@ -10,6 +10,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 import { FilesModule } from './files/files.module';
+import { ProductSeederService } from './products/seeder/product-seeder.service';
+import { CategoriesSeederService } from './categories/seeder/categories-seeder.service';
+import { OrderDetail } from './orders/entities/orderDetails.entity';
 
 @Module({
   imports: [
